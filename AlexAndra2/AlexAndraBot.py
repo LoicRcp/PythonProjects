@@ -1,16 +1,51 @@
 import telebot
 from telebot import types
 import os
-import requests
+import sqlite3
 #botToken = "1629958699:AAEeVgua1DTi-gzp6AWtIbdxXHWvPSHFqCc"
 botToken = "1632753705:AAHerazoKWTDDtvFpYUjTCf0O61Ggv-Ebe4"
 
 pdfPath = os.getcwd() + r'\bot telegram messenger.pdf'
-
 bot = telebot.TeleBot(botToken)
+
+
+conn = sqlite3.connect('DataBaseLanguage.db', check_same_thread=False)
+cursor = conn.cursor()
+
+try: #Créer la table "Clients" si elle n'existe pas déjà
+    cursor.execute('CREATE TABLE users(chatId BIGINT, language TEXT)')
+except sqlite3.OperationalError:
+    pass
+
+conn.commit() #Enregistre
+
+
+def checkIfInBDD(user_id):
+    cursor.execute('SELECT chatId FROM users')
+    result = cursor.fetchall()
+    tempBool = False
+    for id in result:
+        if user_id in id:
+            tempBool = True
+            break
+    return tempBool
+
+def pickLanguage(message):
+    markup = types.ReplyKeyboardMarkup()
+    frButton = types.KeyboardButton('/🇫🇷')
+    enButton = types.KeyboardButton('/🇬🇧')
+    esButton = types.KeyboardButton('/🇪🇸')
+
+    markup.row(frButton,enButton,esButton)
+
+    bot.reply_to(message, "Language ?", reply_markup=markup)
 
 @bot.message_handler(commands=['start']) #Répond a la commande /Start
 def start(message):
+
+    #if checkIfInBDD(message.from_user.id):
+    pickLanguage(message)
+    '''
     markup = types.ReplyKeyboardMarkup()
     conceptBtn = types.KeyboardButton('/concept')
     registerBtn = types.KeyboardButton('/register')
@@ -23,7 +58,7 @@ def start(message):
     markup.row(tutosBtn,tarifsBtn,moreBtn,supportBtn)
 
     bot.reply_to(message, "Bonjour, ceci est le bot d'aide en phase de développement. De quoi avez vous besoin ?", reply_markup=markup)
-
+    '''
 @bot.message_handler(commands=['concept'])
 def concept(message):
     bot.reply_to(message, "Voici une vidéo de présentation !\nhttps://youtube.com")
