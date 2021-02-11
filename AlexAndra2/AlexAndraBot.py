@@ -3,9 +3,20 @@ from telebot import types
 import os
 import sqlite3
 from telebot import apihelper
+import pickle
 
-#botToken = "1629958699:AAEeVgua1DTi-gzp6AWtIbdxXHWvPSHFqCc"
-botToken = "1632753705:AAHerazoKWTDDtvFpYUjTCf0O61Ggv-Ebe4"
+
+# Pour ne pas mettre les token en clair dans le code
+# Charge le token depuis un fichier local
+
+if os.path.exists("botTokenFileActive.pickle"):
+    with open('botTokenFileActive.pickle',"rb") as tokenFile:
+        botToken = pickle.load(tokenFile)
+else:
+    print("BotTokenFileActive.pickle not found. Exiting")
+    exit()
+
+
 
 pdfPath = os.getcwd() + r'\bot telegram messenger.pdf'
 bot = telebot.TeleBot(botToken)
