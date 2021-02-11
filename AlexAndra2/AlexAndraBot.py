@@ -246,7 +246,13 @@ def tutorials(message):
 
 @bot.message_handler(commands=['prices'])
 def tarifs(message):
-    if botLanguage == 'french':
+
+    bot.reply_to(message, 'https://www.fenixtradauto.com/abostarter/')
+    imageAbo = open('tarifs.png', 'rb')
+    bot.send_photo(message.chat.id, imageAbo)
+
+
+    ''' if botLanguage == 'french':
         bot.reply_to(message, "<IMAGE ABONNEMENT>\n"
                               "https://www.fenixtradauto.com/abostarter/\n"
                               "<PHOTO ICONE ABONNEMENT>")
@@ -256,9 +262,9 @@ def tarifs(message):
                               "https://www.fenixtradauto.com/abostarter/\n"
                               "<PHOTO ICONE ABONNEMENT>")
     elif botLanguage == "spanish":
-        bot.reply_to(message, "<IMAGE ABONNEMENT>\n"
+        bot.reply_to(message, 
                               "https://www.fenixtradauto.com/abostarter/\n"
-                              "<PHOTO ICONE ABONNEMENT>")
+                              "<PHOTO ICONE ABONNEMENT>")'''
 
 
 
