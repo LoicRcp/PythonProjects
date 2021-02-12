@@ -1,0 +1,36 @@
+- Lire le fichier excel et récupérer les infos clients [~1H]
+- Gérer une acquisition des idenfifiants (login/password) sécurisée via un fichier local [~1H]
+- Se connecter à l'api Gmail avec les identifiants fournis [~2H]
+- Créer un nouveau mail dans les brouillons. [~3H (recherches a faire)]
+- Récupérer le texte de base, et modifier tout les éléments par les infos client correspondantes [~2H]
+- Gérer les exceptions (Identifiants incorrect, connection impossible, infos clients manquantes, etc...) [1H]
+- Gérer les pièces jointes
+- Trier les clients (Déjà fait/ Pas fait)
+8 Actions supplémentaires (6+2) 30+10€
+
+Créer une interface Graphique +15€
+Mettre en .exe +10€
+
+5+30+10+15+10€ = 70€
+
+OPTIONNEL:
+- Créer une interface graphique pour: [~4H]
+	Selectionner le client (si vous avez un excel avec tout les clients)
+	Rentrer le texte à modifier
+	Un bouton pour créer le texte personnalisé
+	Un bouton pour créer le brouillon de mail sur Gmail
+
+Sans cette option, vous allez devoir intéragir avec un terminal ou vous n'allez pas pouvoir intéragir du tout et le programme sera bien moins flexible
+
+- Je convertit le programme en executable, pour que vous n'ayez pas besoin d'installer Python et les librairies associées
+
+- Je vous fais une vidéo explicative concernant le programme, sans ça vous aurez un .txt pour les explications.
+
+
+[] = Optionnel
+
+5+30+[15+10+10] = 35-70€
+1+1+2+3+2+1+4
+4+3+3+4
+8+6
+14
