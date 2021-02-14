@@ -46,8 +46,8 @@ def getInfos():
 
 def makeMail(client):
     files_to_send = [
-        "fichier1.txt",
-        "fichier2.txt",
+        "N°1 - Pack Site Internet et Hébergement.pdf",
+        "N°2 - Sites Fictifs.pdf",
     ]
 
     receiver = 'darkdiablot@gmail.com'
@@ -71,8 +71,7 @@ def makeMail(client):
 <p>&nbsp;</p>
 <p><strong>F&eacute;licitations pour la cr&eacute;ation de votre entreprise !&nbsp;</strong></p>
 <p>Lorsque l'on d&eacute;cide d'ouvrir son affaire, il est important de penser &agrave; sa visibilit&eacute;.</p>
-<p>&nbsp;</p>
-<p>Chaque jour, plus de<strong>&nbsp;6,9 milliards de personnes</strong>&nbsp;recherchent<strong>&nbsp;un service sur Google.</strong><br />Imaginez le potentiel commercial qui s'y cache &agrave; <strong>"""+ client['ville'] +"""</strong> !&nbsp;<br /><br /><strong>85% des internautes contactent un professionnel via le web !<br /></strong>Aujourd'hui, il est donc essentiel d'avoir un site internet pour am&eacute;liorer son image et ses performances commerciales.&nbsp;</p>
+Chaque jour, plus de<strong>&nbsp;6,9 milliards de personnes</strong>&nbsp;recherchent<strong>&nbsp;un service sur Google.</strong><br />Imaginez le potentiel commercial qui s'y cache &agrave; <strong>"""+ client['ville'] +"""</strong> !&nbsp;<br /><br /><strong>85% des internautes contactent un professionnel via le web !<br /></strong>Aujourd'hui, il est donc essentiel d'avoir un site internet pour am&eacute;liorer son image et ses performances commerciales.&nbsp;
 <p><br />Vos concurrents l'ont compris, et <strong>absorbent vos clients potentiels</strong>&nbsp;gr&acirc;ce &agrave; leur site internet.<strong><u><br /></u></strong><br /><u>Cr&eacute;er son propre site g&eacute;n&egrave;re &eacute;norm&eacute;ment d'avantages,&nbsp;c'est votre carte de visite digitale</u>&nbsp;:</p>
 <ul>
 <li><strong>Votre site internet est ouvert 24h/24 et 7j/7 !</strong></li>
@@ -110,7 +109,7 @@ def makeMail(client):
             attach_part = MIMEBase("application", "octet-stream")
             attach_part.set_payload(data)
             encoders.encode_base64(attach_part)
-            attach_part.add_header("Content-Disposition", f"attachment; filename= {file}")
+            attach_part.add_header("Content-Disposition", "attachment", filename=file)
             msg.attach(attach_part)
     return msg
 
@@ -149,7 +148,6 @@ def makeRtf(client):
 \line
 \\b Félicitations pour la création de votre entreprise !\\b0\line
 Lorsque l'on décide d'ouvrir son affaire, il est important de penser à sa visibilité.\line
-\line
 Chaque jour, plus de \\b 6,9 milliards de personnes \\b0 recherchent \\b un service sur Google.\\b0\line
 Imaginez le potentiel commercial qui s'y cache à \\b """ + ville + """ !\line
 \line
@@ -284,19 +282,15 @@ while True:
 
 
             msg = makeMail(client)
-            send_mail(creds[0], creds[1], creds[0], 'alexissevrin.web@gmail.com', msg, client['rowNb'])
+            send_mail(creds[0], creds[1], creds[0], client['mail'], msg, client['rowNb'])
             endTime = int(time.time())+int(delay)
             clientNumber+=1
 
-            clientSex = clientList[clientNumber]['sex']
-            clientNom = clientList[clientNumber]['nom']
-            clientVille = clientList[clientNumber]['ville']
-            clientMail = clientList[clientNumber]['mail']
             clientRow = clientList[clientNumber]['rowNb']
-            window.Element('sex').Update(clientSex)
-            window.Element('name').Update(clientNom)
-            window.Element('city').Update(clientVille)
-            window.Element('mail').Update(clientMail)
+            window.Element('sex').Update(clientList[clientNumber]['sex'])
+            window.Element('name').Update(clientList[clientNumber]['nom'])
+            window.Element('city').Update(clientList[clientNumber]['ville'])
+            window.Element('mail').Update(clientList[clientNumber]['mail'])
 
         if event == 'stopMail':
             sendingMail = False
@@ -310,10 +304,10 @@ while True:
                 file.close()
 
         if event == 'confirm':
-            clientSex = values['sex']
-            clientNom = values['name']
-            clientVille = values['city']
-            clientMail = values['mail']
+            clientList[clientNumber]['sex'] = values['sex']
+            clientList[clientNumber]['nom'] = values['name']
+            clientList[clientNumber]['ville'] = values['city']
+            clientList[clientNumber]['mail'] = values['mail']
 
 
 # clientList = getInfos()
