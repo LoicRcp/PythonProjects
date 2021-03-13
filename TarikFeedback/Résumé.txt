@@ -1,0 +1,69 @@
+
+Plan brouillon:
+----------------------------
+
+Bot qui souhaite la bienvenue:
+
+- Souhaite la bienvenue dans le groupe et propose de décaler en MP pour + d'info (avec un lien)
+- En MP, lorsque "/start", explique les règles du groupe + comment voir les feedback (une image)
+
+
+Bot de planification de messages:
+
+(https://core.telegram.org/bots/api#poll)
+
+- Obligatoirement des Quizz, 1 énoncé, 4 questions
+- Envoyer un message en privé au bot et lui dire "/newQuizz" par exemple
+- Lui fournir l'énoncé de la question et les 4 propositions de réponse et la date/heure d'envoi et le feedback (explanation)
+ (stocker dans une base de données)
+- Une commande pour voir les messages planifiés
+- Une commande supprimer un quizz planifier
+- Pas de commande modifier --> Supprimer et refaire le quizz
+
+
+Plan Final:
+-------------------------------
+
+- Créer un sous-programme qui permet de choisir un groupe Telegram et le mettre dans un fichier
+- Récupérer les infos du bot Telegram (Token) + le groupe dans lequel opérer via des fichier externe
+- Multi-Threader la partie Polling et la partie envoiQuizz, pour avoir la moitié du programme qui "sleep" en attendant le prochain envoi de message et l'autre moitié en mode "polling" pour rester en ligne et intéragir.
+
+
+Accueil:
+- Lorsqu'un utilisateur rejoint le groupe, lui souhaiter la bienvenue et proposer de go MP pour + d'infos avec un lien.
+- Lorsqu'un utilisateur rejoint ou quitte le groupe, mettre à jour la base de données des membres du groupe (ça nous sera utile plus tard pour gérer les abonnements)
+
+
+Planification quizz:
+- Si existe pas, créer base de données "quizz", avec 2 tables, la table énoncé, la table réponse:
+questions(_N°question, énoncé question, explication_réponse, date envoi)
+Réponse(_N° réponse, #N° question, énoncé réponse)
+
+
+
+- Implémenter commande /NewQuizz : Vérifier que l'utilisateur est bien @TarikCherkaoui, puis demander l'énoncé de la question, puis demander le nombre de réponses, puis demander les réponses, puis demander l'explication, puis demander la date d'envoi du quizz.
+exemple:(/NewQuizz, /removeQuizz, /seePlannedQuizz)
+
+- Implémenter commande /seeQuizz : Affiche la liste des quizz qui n'ont pas encore été envoyé, avec: Numéro d'identification, question, réponses, explication et date d'envoi
+
+- Implémenter commande /removeQuizz: Demander le numéro d'identification du quizz a supprimer (faire /seeQuizz pour savoir le num d'identification)
+
+- A chaque appel de commande, modifier la base de données des questions et met l'event update en set (cf: https://stackoverflow.com/questions/5114292/break-interrupt-a-time-sleep-in-python)
+- Créer une fonction (updateNextMess) qui trouve dans la base de données quel est le prochain message a envoyer, mettre les infos dans des variables (question, réponse1, réponse2,..., explication réponse). Si vide, attendre 30 minutes et revérifier
+- Créer le prochain quizz a envoyer avec les infos contenu dans les variables
+- Attendre jusqu'au moment d'envoyer le prochain message. Si l'update est mis en set (= changement dans la BDD des quizz), retrouver quel est le prochain message a envoyer + attendre la durée adéquate.
+- Envoyer le quizz dans le groupe stocké dans le fichier, a l'heure indiquée
+
+- Optionnel: Explication vidéo ou/et en appel pour se servir du bot, le mettre en place, etc... (SAV en gros)
+Sans cette option, les explications se feront à l'écrit
+
++ Faire en sorte que le programme se relance sur le VPS si il plante (utiliser un cron pour lancer toute les 30 minutes un script bash, qui vérifie si le bot est lancé, et si il ne l'est pas, le lancer)
+
+
+14 actions + manipulation de données externe + 1 support video/appel
+6 + 5 + 3 actions = 30 + 25 + 15 = 70e
+Manipulation de données externe += 10€
+Support video/appel += 10€
+
+Total: 80€
+
