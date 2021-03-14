@@ -28,7 +28,13 @@ api_hash = creds[1]
 phoneNb = creds[2]
 botToken = creds[3]
 
+try:
+    with open('group.pickle', 'rb') as groupFile:
+        group = pickle.load(groupFile)
 
+except:
+    print("No group file in the folder...")
+    exit()
 
 
 conn = sqlite3.connect('DataBaseClients.db', check_same_thread=False)
@@ -72,3 +78,5 @@ updateMembersBdd()
 
 t2 = threading.Thread(target=botPolling)
 t2.start()
+
+print(group)

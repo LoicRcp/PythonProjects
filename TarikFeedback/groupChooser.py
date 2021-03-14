@@ -111,8 +111,6 @@ connect()
 layout = \
 [
 [sg.Listbox(values='',size=(66, 6), key=("ListBox"), select_mode=sg.LISTBOX_SELECT_MODE_SINGLE)],
-[sg.Button("Confirmer", size=(59,2), button_color=('#1c1c1c','#9b9b9b'),key="listBoxConfirm")],
-[sg.Button("Mode1", size=(28,1),button_color=('#1c1c1c','#9b9b9b')),sg.Button("Mode2", size=(28,1),button_color=('#1c1c1c','#9b9b9b'))],
 [sg.Button("Demarrer l'export", size=(59,1), button_color=('#1c1c1c','#9b9b9b'))],
 [sg.Text("___________________________________________________________________")],
 [sg.Output(size=(66, 10), echo_stdout_stderr=True)]
@@ -139,29 +137,18 @@ while True:
 
     if event == sg.WIN_CLOSED or event == "Quitter":
         break
-
-    if event == "Mode1":
-        mode = 1
-    if event == "Mode2":
-        mode = 2
-
-    if event == "listBoxConfirm":
-        try:
-            listBoxOutput = values['ListBox']
-        except Exception as e:
-            print(e)
     if event == "Demarrer l'export":
         try:
-            groupToAddList = []
+            listBoxOutput = values['ListBox']
+
             for group in groupList:
                 if group.title in listBoxOutput:
-                    groupToAddList.append(group)
+                    chosenGroup = group
 
-            memberList = getMembers(mode, groupToAddList)
+            with open("group.pickle", "wb") as file:
+                pickle.dump(chosenGroup, file)
 
-
-            print(f"Exportation de {len(memberList)} membres réussi")
+            print(f"Export du groupe {chosenGroup.title} réussi !")
         except Exception as e:
             print(e)
-
 
