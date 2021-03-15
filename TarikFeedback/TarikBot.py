@@ -214,9 +214,10 @@ def updateMembersBdd():
     return inMemberGroupNotInBdd
 
 def sendWelcome(newMembers):
-    welcomeMessage = "Bienvenue au nouveaux membres:\n"
-    for member in newMembers: welcomeMessage+=f'{member[1]},\n'
-
+    if len(newMembers) > 0:
+        welcomeMessage = "Bienvenue au nouveaux membres:\n"
+        for member in newMembers: welcomeMessage+=f'{member[1]},\n'
+        bot.send_message('-100' + str(group.id), welcomeMessage) # -100 au début du chatId pour dire que c'est un channel
 
 
 
@@ -236,5 +237,3 @@ sendWelcome(updateMembersBdd())
 
 t2 = threading.Thread(target=botPolling)
 t2.start()
-
-bot.send_message(group, "test")
