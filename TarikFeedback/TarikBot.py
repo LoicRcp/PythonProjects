@@ -41,7 +41,7 @@ conn = sqlite3.connect('DataBaseClients.db', check_same_thread=False)
 cursor = conn.cursor()
 
 try: #Créer la table "Clients" si elle n'existe pas déjà
-    cursor.execute('CREATE TABLE clients(firstName TEXT,lastName TEXT, username TEXT, chatId BIGINT, subDateStart DATE, subDateEnd DATE)')
+    cursor.execute('CREATE TABLE clients(firstName TEXT,lastName TEXT, username TEXT, userId BIGINT, subDateStart DATE, subDateEnd DATE)')
 except sqlite3.OperationalError:
     pass
 conn.commit() #Enregistre
@@ -120,6 +120,24 @@ def getMembers(mode, group):
     return membersList
 
 
+def checkIfInBDD(user_id):
+    cursor.execute('SELECT userId FROM clients')
+    result = cursor.fetchall()
+    tempBool = False
+    for id in result:
+        if user_id in id:
+            tempBool = True
+            break
+    return tempBool
+
+def checkIfInMemberList(memberList, userToFind):
+    tempBool = False
+    for user in memberList:
+        if user == userToFind:
+            tempBool = True
+            break
+    return tempBool
+
 def updateMembersBdd():
     groupId = group.id
     for groups in getgroups():
@@ -130,8 +148,7 @@ def updateMembersBdd():
     memberList1 = getMembers(1, chosenGroup)
     memberList2 = getMembers(2, chosenGroup)
 
-    print(len(memberList1))
-    print(len(memberList2))
+
 
     memberList1.sort()
     memberList2.sort()
@@ -139,7 +156,66 @@ def updateMembersBdd():
     mergedMemberList = memberList1
     mergedMemberList.extend(x for x in memberList2 if x not in mergedMemberList)
 
-    print(len(mergedMemberList))
+    cursor.execute('SELECT * FROM clients')
+    bddMembers = cursor.fetchall()
+
+    bddMembers.sort()
+    mergedMemberList.sort()
+
+    inMemberGroupNotInBdd = []
+
+
+    for i in range(len(mergedMemberList)):
+        setted = mergedMemberList[i][0]
+        inBdd = False
+        for j in range(len(bddMembers)):
+            setted2 = bddMembers[j][3]
+            if setted == setted2:
+                inBdd = True
+                break
+        if not inBdd:
+            inMemberGroupNotInBdd.append(mergedMemberList[i])
+
+
+
+
+    inBddNotInMemberGroup = []
+
+    for i in range(len(bddMembers)):
+        setted = bddMembers[i][3]
+        inMemberList = False
+        for j in range(len(mergedMemberList)):
+            setted2 = mergedMemberList[j][0]
+            if setted == setted2:
+                inMemberList = True
+                break
+        if not inMemberList:
+            inBddNotInMemberGroup.append(bddMembers[i])
+
+    for user in inBddNotInMemberGroup:
+        cursor.execute(f'DELETE FROM clients WHERE userId = {user[3]}')
+    # 0 = id
+    # 1 = firstname
+    # 2 = lastname
+    # 3 = username
+    # 4 = groupfrom
+    # 5 = accesshash
+    for user in inMemberGroupNotInBdd:
+        cursor.execute(f'INSERT INTO clients VALUES(?,?,?,?,?,?)', (user[1], user[2], user[3], user[0],None, None))
+    conn.commit()
+
+    print("NewMember:" )
+    for user in inMemberGroupNotInBdd:
+        print(user[1],",")
+    print("Member who leaved: ")
+    for user in inBddNotInMemberGroup:
+        print(user[0],",")
+
+    return inMemberGroupNotInBdd
+
+def sendWelcome(newMembers):
+    welcomeMessage = "Bienvenue au nouveaux membres:\n"
+    for member in newMembers: welcomeMessage+=f'{member[1]},\n'
 
 
 
@@ -154,10 +230,11 @@ connect()
 
 
 bot = telebot.TeleBot(botToken)
-updateMembersBdd()
+sendWelcome(updateMembersBdd())
 
 
 
 t2 = threading.Thread(target=botPolling)
 t2.start()
 
+bot.send_message(group, "test")
